@@ -1,7 +1,9 @@
 package base
 
 import (
+	"reflect"
 	"sync"
+	"unsafe"
 )
 
 // buffer pool中包含了多个不同规模的内存池:
@@ -41,6 +43,8 @@ func (m *LevelsPool[T]) Get(expectLen uint64) *[]T {
 	sp := m.sp[index]
 
 	b := sp.Get().(*[]T)
+	sliceHeader := (*reflect.SliceHeader)(unsafe.Pointer(b))
+	sliceHeader.Len = int(expectLen)
 	return b
 }
 

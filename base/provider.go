@@ -10,16 +10,16 @@ type LevelsMemPool[T any] interface {
 	PutBack(b *[]T)
 }
 
-func NewMemPool[T any](levels []uint64) LevelsMemPool[T] {
-	newlevel := RemoveRepByMap[uint64](levels)
+func NewMemPool[T any](inputs []uint64) LevelsMemPool[T] {
+	newlevel := RemoveRepByMap[uint64](inputs)
 	sort.Slice(newlevel, func(i, j int) bool {
 		return newlevel[i] < newlevel[j]
 	})
 
 	p := &LevelsPool[T]{
-		maxSize: levels[len(newlevel)-1],
+		maxSize: newlevel[len(newlevel)-1],
 		sp:      make([]*sync.Pool, len(newlevel)),
-		levels:  levels,
+		levels:  newlevel,
 	}
 
 	for k, v := range newlevel {
