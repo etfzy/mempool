@@ -1,6 +1,10 @@
-package base
+package mempool
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/xpizy2020/mempool/base"
+)
 
 type ConstantMemPool[T any] interface {
 	Get() *[]T
@@ -13,7 +17,7 @@ type LevelsMemPool[T any] interface {
 }
 
 func NewLevelsMemPool[T any](levels []uint64) LevelsMemPool[T] {
-	p := &LevelsPool[T]{
+	p := &base.LevelsPool[T]{
 		maxSize: levels[len(levels)-1],
 		sp:      make([]*sync.Pool, len(levels)),
 		levels:  levels,
@@ -33,7 +37,7 @@ func NewLevelsMemPool[T any](levels []uint64) LevelsMemPool[T] {
 }
 
 func NewConstantPool[T any](expect uint64) ConstantMemPool[T] {
-	p := &ConstantPool[T]{
+	p := &base.ConstantPool[T]{
 		expect: expect,
 		sp:     &sync.Pool{},
 	}
