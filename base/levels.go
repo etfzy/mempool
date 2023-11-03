@@ -20,38 +20,13 @@ const (
 
 var DefaultLevelHierarchies = []int64{level1, level2, level3, level4, level5, level6, level7}
 
-type ListMemPool[T any] interface {
-	Get(expectLen int64) *[]T
-	PutBack(b *[]T)
-}
-
-type MemPoolInfos[T any] struct {
-	maxSize int64
+type LevelsPool[T any] struct {
+	maxSize uint64
 	sp      []*sync.Pool
 	levels  []uint64
 }
 
-func NewMemPool[T any](maxSize int, levels []uint64) ListMemPool[T] {
-	p := &MemPoolInfos[T]{
-		maxSize: MaxSize,
-		sp:      make([]*sync.Pool, len(levels)),
-		levels:  levels,
-	}
-
-	for k, v := range levels {
-		temp := v
-		p.sp[k] = &sync.Pool{}
-		p.sp[k].New = func() any {
-			var b = make([]T, 0, temp)
-			return &b
-		}
-
-	}
-
-	return p
-}
-
-func (m *MemPoolInfos[T]) Get(expectLen int64) *[]T {
+func (m *LevelsPool[T]) Get(expectLen uint64) *[]T {
 
 	if expectLen > m.maxSize {
 		b := make([]T, 0, expectLen)
@@ -69,7 +44,7 @@ func (m *MemPoolInfos[T]) Get(expectLen int64) *[]T {
 	return b
 }
 
-func (m *MemPoolInfos[T]) PutBack(b *[]T) {
+func (m *LevelsPool[T]) PutBack(b *[]T) {
 	if b == nil {
 		return
 	}
@@ -91,7 +66,7 @@ func (m *MemPoolInfos[T]) PutBack(b *[]T) {
 	return
 }
 
-func (m *MemPoolInfos[T]) findHierachicalIndex(el uint64) int {
+func (m *LevelsPool[T]) findHierachicalIndex(el uint64) int {
 	//level 索引初始化为7（有效值为0-6）
 	index := len(m.levels)
 	for k, v := range m.levels {
