@@ -1,6 +1,6 @@
 package base
 
-import ()"sync"
+import "sync"
 
 type ConstantMemPool[T any] interface {
 	Get() *[]T
@@ -11,7 +11,6 @@ type LevelsMemPool[T any] interface {
 	Get(expect uint64) *[]T
 	PutBack(b *[]T)
 }
-
 
 func NewLevelsMemPool[T any](levels []uint64) LevelsMemPool[T] {
 	p := &LevelsPool[T]{
