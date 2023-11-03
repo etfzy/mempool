@@ -13,7 +13,12 @@ func TestBytes(t *testing.T) {
 		f := sp.Get(1035)
 
 		if cap(*f) != 2048 {
-			t.Errorf("expect length is error %d", cap(*f))
+			t.Errorf("expect capacity is error %d", cap(*f))
+		}
+		fmt.Println(cap(*f))
+		fmt.Println(len(*f))
+		if len(*f) != 1035 {
+			t.Errorf("expect length is error %d", len(*f))
 		}
 
 		sp.PutBack(f)
