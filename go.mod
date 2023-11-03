@@ -1,3 +1,3 @@
-module github.com/xpizy2020/mempool
+module github.com/etfzy/mempool
 
 go 1.20
