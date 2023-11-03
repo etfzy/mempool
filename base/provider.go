@@ -26,7 +26,7 @@ func NewMemPool[T any](levels []uint64) LevelsMemPool[T] {
 		temp := v
 		p.sp[k] = &sync.Pool{}
 		p.sp[k].New = func() any {
-			var b = make([]T, 0, temp)
+			var b = make([]T, temp, temp)
 			return &b
 		}
 
