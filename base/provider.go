@@ -1,6 +1,9 @@
 package base
 
-import "sync"
+import (
+	"sort"
+	"sync"
+)
 
 type ConstantMemPool[T any] interface {
 	Get() *[]T
@@ -13,13 +16,18 @@ type LevelsMemPool[T any] interface {
 }
 
 func NewLevelsMemPool[T any](levels []uint64) LevelsMemPool[T] {
+	newlevel := RemoveRepByMap[uint64](levels)
+	sort.Slice(newlevel, func(i, j int) bool {
+		return newlevel[i] < newlevel[j]
+	})
+
 	p := &LevelsPool[T]{
-		maxSize: levels[len(levels)-1],
-		sp:      make([]*sync.Pool, len(levels)),
+		maxSize: levels[len(newlevel)-1],
+		sp:      make([]*sync.Pool, len(newlevel)),
 		levels:  levels,
 	}
 
-	for k, v := range levels {
+	for k, v := range newlevel {
 		temp := v
 		p.sp[k] = &sync.Pool{}
 		p.sp[k].New = func() any {

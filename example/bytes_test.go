@@ -9,7 +9,7 @@ import (
 
 func TestBytes(t *testing.T) {
 	t.Run("test levels bytes", func(t *testing.T) {
-		sp := mempool.NewLevelsBytesPool([]uint64{1024, 2048, 4096})
+		sp := mempool.NewLevelsBytesPool([]uint64{2048, 1024, 1024, 4096})
 		f := sp.Get(1035)
 
 		if cap(*f) != 2048 {
