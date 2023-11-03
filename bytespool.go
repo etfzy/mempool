@@ -1,11 +1,7 @@
 package mempool
 
-import "github.com/xpizy2020/mempool/base"
+import "github.com/etfzy/mempool/base"
 
-func NewLevelsBytesPool(levels []uint64) base.LevelsMemPool[byte] {
-	return base.NewLevelsMemPool[byte](levels)
-}
-
-func NewConstantBytesPool(expect uint64) base.ConstantMemPool[byte] {
-	return base.NewConstantPool[byte](expect)
+func NewBytesPool(levels []uint64) base.LevelsMemPool[byte] {
+	return base.NewMemPool[byte](levels)
 }

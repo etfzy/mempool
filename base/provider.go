@@ -5,17 +5,12 @@ import (
 	"sync"
 )
 
-type ConstantMemPool[T any] interface {
-	Get() *[]T
-	PutBack(b *[]T)
-}
-
 type LevelsMemPool[T any] interface {
 	Get(expect uint64) *[]T
 	PutBack(b *[]T)
 }
 
-func NewLevelsMemPool[T any](levels []uint64) LevelsMemPool[T] {
+func NewMemPool[T any](levels []uint64) LevelsMemPool[T] {
 	newlevel := RemoveRepByMap[uint64](levels)
 	sort.Slice(newlevel, func(i, j int) bool {
 		return newlevel[i] < newlevel[j]
@@ -35,20 +30,6 @@ func NewLevelsMemPool[T any](levels []uint64) LevelsMemPool[T] {
 			return &b
 		}
 
-	}
-
-	return p
-}
-
-func NewConstantPool[T any](expect uint64) ConstantMemPool[T] {
-	p := &ConstantPool[T]{
-		expect: expect,
-		sp:     &sync.Pool{},
-	}
-
-	p.sp.New = func() any {
-		var b = make([]T, 0, expect)
-		return &b
 	}
 
 	return p
