@@ -29,11 +29,11 @@ type LevelsPool[T any] struct {
 func (m *LevelsPool[T]) Get(expectLen uint64) *Buffer[T] {
 
 	if expectLen > m.maxSize {
-		return newBuffer[T](int(expectLen))
+		return NewBuffer[T](int(expectLen))
 	}
 	index := m.findHierachicalIndex(uint64(expectLen))
 	if index == len(m.levels) {
-		return newBuffer[T](int(expectLen))
+		return NewBuffer[T](int(expectLen))
 	}
 
 	sp := m.sp[index]

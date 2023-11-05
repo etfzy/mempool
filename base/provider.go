@@ -26,7 +26,7 @@ func NewMemPool[T any](inputs []uint64) LevelsMemPool[T] {
 		temp := v
 		p.sp[k] = &sync.Pool{}
 		p.sp[k].New = func() any {
-			return newBuffer[T](int(temp))
+			return NewBuffer[T](int(temp))
 		}
 	}
 

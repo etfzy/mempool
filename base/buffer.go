@@ -26,7 +26,7 @@ func (b *Buffer[T]) Len() int {
 	return len(b.buf)
 }
 
-func newBuffer[T any](capacity int) *Buffer[T] {
+func NewBuffer[T any](capacity int) *Buffer[T] {
 	return &Buffer[T]{
 		buf: make([]T, 0, capacity),
 	}
