@@ -30,6 +30,12 @@ func (b *Buffer[T]) Buf() *[]T {
 	return &b.buf
 }
 
+func (b *Buffer[T]) Clone() *[]T {
+	data := make([]T, len(b.buf))
+	copy(data, b.buf)
+	return &data
+}
+
 func NewBuffer[T any](capacity int) *Buffer[T] {
 	return &Buffer[T]{
 		buf: make([]T, 0, capacity),
