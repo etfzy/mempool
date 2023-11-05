@@ -6,8 +6,8 @@ import (
 )
 
 type LevelsMemPool[T any] interface {
-	Get(expect uint64) *[]T
-	PutBack(b *[]T)
+	Get(expect uint64) *Buffer[T]
+	PutBack(b *Buffer[T])
 }
 
 func NewMemPool[T any](inputs []uint64) LevelsMemPool[T] {
@@ -26,10 +26,8 @@ func NewMemPool[T any](inputs []uint64) LevelsMemPool[T] {
 		temp := v
 		p.sp[k] = &sync.Pool{}
 		p.sp[k].New = func() any {
-			var b = make([]T, 0, temp)
-			return &b
+			return newBuffer[T](int(temp))
 		}
-
 	}
 
 	return p

@@ -12,22 +12,18 @@ func TestBytes(t *testing.T) {
 		sp := mempool.NewBytesPool([]uint64{2048, 1024, 1024, 4096})
 		f := sp.Get(1035)
 
-		if cap(*f) != 2048 {
-			t.Errorf("expect capacity is error %d", cap(*f))
+		if f.Cap() != 2048 {
+			t.Errorf("expect capacity is error %d", f.Cap())
 		}
-		fmt.Println(cap(*f))
-		fmt.Println(len(*f))
-		if len(*f) != 1035 {
-			t.Errorf("expect length is error %d", len(*f))
+
+		if f.Len() != 1035 {
+			t.Errorf("expect length is error %d", f.Len())
 		}
 
 		sp.PutBack(f)
 
-		s := sp.Get(2048)
-
-		p1 := &s
-		p2 := &f
-		fmt.Println(p1)
-		fmt.Println(p2)
+		s := sp.Get(1068)
+		s.Reset()
+		fmt.Println(s.Len())
 	})
 }

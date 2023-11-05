@@ -1,9 +1,7 @@
 package base
 
 import (
-	"reflect"
 	"sync"
-	"unsafe"
 )
 
 // buffer pool中包含了多个不同规模的内存池:
@@ -28,37 +26,34 @@ type LevelsPool[T any] struct {
 	levels  []uint64
 }
 
-func (m *LevelsPool[T]) Get(expectLen uint64) *[]T {
+func (m *LevelsPool[T]) Get(expectLen uint64) *Buffer[T] {
 
 	if expectLen > m.maxSize {
-		b := make([]T, 0, expectLen)
-		return &b
+		return newBuffer[T](int(expectLen))
 	}
 	index := m.findHierachicalIndex(uint64(expectLen))
 	if index == len(m.levels) {
-		b := make([]T, 0, expectLen)
-		return &b
+		return newBuffer[T](int(expectLen))
 	}
 
 	sp := m.sp[index]
 
-	b := sp.Get().(*[]T)
-	sliceHeader := (*reflect.SliceHeader)(unsafe.Pointer(b))
-	sliceHeader.Len = int(expectLen)
+	b := sp.Get().(*Buffer[T])
+	b.SetLen(expectLen)
 	return b
 }
 
-func (m *LevelsPool[T]) PutBack(b *[]T) {
+func (m *LevelsPool[T]) PutBack(b *Buffer[T]) {
 	if b == nil {
 		return
 	}
-	ex := cap(*b)
+	ex := b.Cap()
 	if ex > MaxSize {
 		return
 	}
 
 	//清零放回
-	*b = (*b)[:0]
+	b.Reset()
 
 	index := m.findHierachicalIndex(uint64(ex))
 	if index == len(m.levels) {
